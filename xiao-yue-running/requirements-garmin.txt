@@ -1,4 +1,0 @@
-garmin-connect-personal-api-python==1.0.0
-mcp==1.30.0
-fitdecode==0.11.0
-pywin32>=306; sys_platform == 'win32'
