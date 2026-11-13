@@ -7,7 +7,9 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'skills' / 'open-running-coach'
 FILES = ['SKILL.md', 'agents/openai.yaml', 'references/analysis.md',
          'references/platforms.md', 'references/training-plans.md',
-         'references/screenshots.md', 'references/integration-status.md', 'LICENSE']
+         'references/screenshots.md', 'references/integration-status.md',
+         'references/recovery.md', 'references/hiking.md', 'references/nutrition.md',
+         'references/intake.md', 'LICENSE']
 
 
 def install(target, update=False):

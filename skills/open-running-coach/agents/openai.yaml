@@ -1,4 +1,4 @@
 interface:
-  display_name: "跑步与恢复助手"
-  short_description: "分析佳明记录或运动App截图，结合恢复线索与个人目标制定训练及力量建议"
-  default_prompt: "使用 $open-running-coach 分析我的佳明记录或上传的运动截图，核对数据后给出训练和恢复建议。"
+  display_name: "跑步与徒步教练"
+  short_description: "结合运动数据和分轮主动提问了解使用者，制定跑步徒步、训练恢复与饮食补给安排"
+  default_prompt: "使用 $open-running-coach，先读取已有运动数据并主动询问影响安排的必要信息，根据我的回答继续了解，再制定训练、恢复和饮食补给建议。"

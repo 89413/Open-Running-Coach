@@ -1,6 +1,8 @@
 # Open Running Coach
 
-佳明个人数据连接 + 运动App截图分析的开源技能原型。面向不同跑步水平的个人使用者，帮助理解训练表现、恢复线索，并制定和调整训练计划。
+佳明个人数据连接 + 运动App截图分析的开源教练技能。结合数据与主动提问，解释跑步或徒步表现，给出具体训练、恢复休息和饮食补给建议。
+
+**v0.2.0-beta.1 源码候选包（2026-11-13）**：升级分轮主动访谈、成绩导向与目标分流、恢复安排、徒步和营养补给规则。本次生成本地源码包，GitHub发布另行执行；Garmin后端与依赖不变。完整对照见[本次更新说明](docs/update-v0.2.0-beta.1.md)。
 
 **首版范围：Garmin连接为可选增强；其他App通过用户上传的截图分析。** 不需要为了分析Keep、vivo健康或COROS截图注册其开发者账号。项目不运营云端账号服务，没有自带模型或独立手机App。
 
@@ -13,25 +15,44 @@
 
 单次运动截图不足以判断整体恢复或完整训练历史。Skill负责分析流程，图片理解和报告由宿主提供；宿主的订阅、使用额度和数据处理条件另计。没有Garmin连接也能使用截图入口。
 
-## 下载与发布
+## 下载哪个包、怎样安装
 
-仓库：[89413/xiao-yue-running](https://github.com/89413/xiao-yue-running)。技能名称仍为`open-running-coach`。发布操作见 [GitHub发布指南](docs/github-publish.md)，预发布说明见 [RELEASE_NOTES](RELEASE_NOTES.md)。本地打包不表示已上传。
+| 下载项 | 包内内容 | 适合谁 |
+| --- | --- | --- |
+| `open-running-coach-v0.2.0-beta.1-source.zip`（本次源码包） | 完整源码、12个技能文件、安装脚本、依赖清单、测试、更新说明及逐文件校验清单 | 安装技能、配置可选Garmin连接，或开发审阅 |
+| 单独Skill ZIP（本次不生成） | `skills/open-running-coach/`的12个技能文件；维护者可在需要时单独分发 | 只需截图分析，或已有可用Garmin工具的用户 |
+| Release中的`Source code (zip)` / `Source code (tar.gz)` | 该Release标签对应的完整仓库源码快照，包含技能、Python后端、安装脚本、依赖清单和测试 | 需要配置Garmin连接、开发或审阅代码的用户 |
+| 仓库`Code → Download ZIP` | 下载时所选分支的当前源码 | 获取分支上的最新文档或开发修改，不一定与某个已发布版本相同 |
 
-## 安装技能
+**Skill ZIP不包含`assistant.py`、`server.py`、`scripts/install_skill.py`或依赖清单，也不会自行安装Garmin连接。** 技能与Python后端属于同一个项目；发布时应核对该版本ZIP中的文件与同标签技能目录一致，但ZIP不等于整个项目。旧版v0.1.0-beta.1含8个文件，新候选版含12个。
 
-下载本项目后，在项目目录运行：
+[下载v0.1.0-beta.1 Skill ZIP](https://github.com/89413/Open-Running-Coach/releases/download/v0.1.0-beta.1/open-running-coach-v0.1.0-beta.1-skill.zip) · [查看所有版本](https://github.com/89413/Open-Running-Coach/releases)
+
+### 只下载Skill ZIP：手动安装
+
+1. 解压，找到直接包含`SKILL.md`的`open-running-coach`文件夹。
+2. Windows中将该文件夹放到`%USERPROFILE%\.codex\skills\`，最终入口应为`%USERPROFILE%\.codex\skills\open-running-coach\SKILL.md`，不要多套一层同名文件夹。其他兼容宿主按其技能加载方式配置。
+3. 已有同名技能时先备份本地修改，再决定更新。重新打开聊天或重启宿主后调用`$open-running-coach`。
+
+截图模式不需要本项目的Python后端。单独的Skill ZIP里没有安装脚本，因此不要在该包内执行`python scripts/install_skill.py`。
+
+### 下载完整源码：安装技能及可选Garmin连接
+
+解压完整源码，在同时包含`README.md`和`scripts`的项目根目录运行：
 
 ```powershell
 python scripts/install_skill.py
 ```
 
-安装器只复制8个技能文件（含MIT许可证），不安装Python依赖、不读取密钥或健康记录、不改MCP配置。已有不同内容时默认拒绝覆盖。审阅更新后可以运行：
+安装器只复制12个技能文件，不安装依赖、不读取密钥或健康数据、不修改MCP配置。审阅更新后可运行`python scripts/install_skill.py --update`；旧指令备份到目标目录的`.backups`，其余文件保留。
 
-```powershell
-python scripts/install_skill.py --update
-```
+需要读取自己的Garmin数据时，继续按[Windows佳明连接指南](docs/garmin-setup.md)安装依赖、配置本人Personal API Key、同步缓存并注册MCP。安装技能本身不完成这些步骤。
 
-更新前将旧白名单文件保存在目标技能目录的`.backups`内，其他文件保留。默认位置是当前用户的`.codex/skills/open-running-coach`。发现不到技能时重新打开聊天或重启宿主；其他兼容宿主按各自的技能加载方式配置。
+### 仓库更新与Release的关系
+
+修改`main`分支不会自动更新已上传的Skill ZIP，已有Release的源码归档也不会自动跟随`main`；它对应所选标签的提交快照。后续修改技能或后端时，应按实际变化重新测试、打包并使用新版本号发布，不把旧下载包描述为分支最新代码。本项目不通过移动旧标签来更新版本。
+
+仓库：[89413/Open-Running-Coach](https://github.com/89413/Open-Running-Coach)。发布流程见[GitHub发布指南](docs/github-publish.md)，版本说明见[RELEASE_NOTES](RELEASE_NOTES.md)。
 
 ## 上传截图就能开始
 
@@ -48,6 +69,21 @@ python scripts/install_skill.py --update
 
 可以先遮住头像、账号和路线。只上传需要的页面即可；图片会交由当前AI宿主处理，不能理解为全程离线。不要将真实截图或报告提交到本仓库。
 
+## 新版怎样像教练一样工作
+
+1. **分轮主动了解**：先读可用记录和已有回答，再了解目标、近期能力与负荷、当前恢复、具体训练日期和单次时间；信息不足时可分2—3轮，每轮优先1—3个关键问题。根据回答继续追问，信息足够就给安排，不重复问卷；不先排完整计划再补问关键条件。用户希望加量时先澄清想改变的时长、速度、频次及原因。
+2. **给出有用判断**：解释最影响决策的表现，连接“依据—解释—行动”，考虑环境、计划执行、近期结构与测量质量；不只复述手表指标。
+3. **具体安排恢复**：分别说明今天、次日与下一次正式训练做什么、做多少、何时调整；结合体感改变原计划，不只写“注意休息”。
+4. **支持徒步**：结合时长、爬升下降、负重、路面和腿脚反馈，考虑连续多日安排。低平均心率不等于下坡负担轻；徒步不套跑步配速评价。
+5. **饮食与补给**：先判断需不需要额外补给，再按活动给日常餐食、运动前中后吃喝及可替代食物。需要定量时说明依据，补充品不作为人人必需。
+6. **按反馈改计划**：核对实际完成与次日反应，再保留、缩短或替换下一课。没有独立持久档案和后台回访，跨聊天衔接可使用可复制摘要。
+7. **围绕目标进阶**：成绩导向的计划提供明确训练刺激和上调条件，结合实际承受能力校准基础跑与质量课。赛前减量、长期发展与恢复阶段分别安排，不把保守维持作为所有人的默认方案。
+8. **面向不同使用者**：先确认本人要提升成绩、维持体能或其他目标，独立校准能力与日程；新手、成熟跑者、回归者和明确维持者采用相应路径，不套用作者的配速、跑量或比赛目标。
+
+例如可以输入：“分析这次徒步，并主动问我还缺哪些信息，再帮我安排明天的恢复和饮食。”首次制定计划时可说：“先了解我的目标、近期能力和时间安排，再给计划，不要直接套通用模板。”
+
+规则及依据：[主动提问](skills/open-running-coach/references/intake.md)、[分析](skills/open-running-coach/references/analysis.md)、[恢复](skills/open-running-coach/references/recovery.md)、[徒步](skills/open-running-coach/references/hiking.md)、[营养补给](skills/open-running-coach/references/nutrition.md)。体验评估见[虚构情景与反馈](docs/coach-evaluation.md)。
+
 ## 可选：连接自己的佳明账号
 
 见 [Windows佳明连接指南](docs/garmin-setup.md)。其他人使用自己的密钥和数据目录，不共享作者账号。项目不自动安装计划任务。
@@ -56,8 +92,8 @@ python scripts/install_skill.py --update
 
 ## 能力与验证边界
 
-- 跑步表现、训练趋势、恢复线索、个体信息收集、参考配速、训练结构、力量动作与反馈调整已写入技能。
-- 截图模式已有对话使用和字段核对案例；新增流程尚未经过独立用户长期试用，不承诺任意App版式都能准确识别。
+- 跑步表现、训练趋势、主动提问、恢复休息、徒步、营养补给、参考配速、训练结构、力量动作与反馈调整已写入技能。
+- 截图模式已有对话使用、字段核对和用户反馈；v0.2新增流程尚未经过独立用户试用或长期效果验证，不承诺任意App版式都能准确识别。
 - Garmin原有私人环境已实际读取数据；项目副本含可选连接源码与依赖，干净环境安装及其他账号/区域仍需验证。
 - Keep/vivo副本映射和Health Kit调查保留为实验资料，均不作为首版入口；自动直连没有接通。COROS公开入口及OAuth发现已实测，但账号授权、工具和真实数据未验证。
 - 训练建议由AI生成，不构成诊断，不保证成绩或训练效果。截图分析不等于平台自动同步；聊天历史不等于持久化训练档案。
@@ -87,6 +123,6 @@ python test_mcp.py
 
 ## 开源与数据边界
 
-本项目采用 [MIT许可证](LICENSE)。当前预发布版本为 `v0.1.0-beta.1`，尚未在本次工作中上传GitHub。开源代码不等于获得平台API权限；Garmin Personal API面向个人访问自己的数据，多用户商业服务需另外核实平台方案。
+本项目采用 [MIT许可证](LICENSE)。`v0.1.0-beta.1`为历史发布版，`v0.2.0-beta.1`为本次本地源码候选包。开源代码不等于获得平台API权限；Garmin Personal API面向个人访问自己的数据，多用户商业服务需另外核实平台方案。
 
 真实数据、凭证、数据库、原始活动文件、截图、个人报告和本地缓存不属于公开分发内容。安装器只发布指令白名单；不要把工作区或整个个人项目目录直接压缩上传。后续发布前仍需检查文件清单、许可证、安装流程和敏感信息。
